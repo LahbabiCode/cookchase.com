@@ -1,0 +1,29 @@
+# CookChase — one-command deploy
+#   docker compose up -d --build
+#
+# The SQLite database is stored in the named volume `cookchase-data`, so your
+# admin edits, comments and analytics survive container rebuilds/updates.
+#
+# Put the site behind HTTPS with a reverse proxy (Caddy / Nginx / Cloudflare)
+# or expose 3000 directly. See DEPLOYMENT.md.
+
+services:
+  cookchase:
+    build: .
+    image: cookchase:latest
+    container_name: cookchase
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      # Canonical URL — MUST match the public domain for correct sitemap/canonical links.
+      - SITE_URL=${SITE_URL:-https://cookchase.com}
+      # Optional admin session secret (keep stable across restarts to avoid logouts).
+      - ADMIN_SESSION_SECRET=${ADMIN_SESSION_SECRET:-}
+    volumes:
+      - cookchase-data:/app/data
+
+volumes:
+  cookchase-data:

@@ -1,0 +1,705 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  /* shadcn/ui semantic tokens — mapped to the Cook's Workbench palette. */
+  --background: 46 33% 95%; /* paper #F6F4ED */
+  --foreground: 41 11% 14%; /* ink-900 #26241F */
+  --card: 0 0% 100%;
+  --card-foreground: 41 11% 14%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 41 11% 14%;
+  --primary: 151 40% 28%; /* brand-600 #2C6349 */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 41 22% 91%; /* linen #EFEBE2 */
+  --secondary-foreground: 41 11% 20%;
+  --muted: 41 18% 93%; /* ink-100 #F1EFEA */
+  --muted-foreground: 35 9% 47%; /* ink-500 #86806F */
+  --accent: 151 33% 95%; /* brand-50 #EFF6F2 */
+  --accent-foreground: 151 40% 20%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 41 13% 87%; /* ink-200 #E3E0D8 */
+  --input: 41 13% 87%;
+  --ring: 28 72% 41%; /* copper-500 #B5651D */
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-paper text-ink-900 antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Headings carry the display face — the workbench's engraved labels. */
+@layer base {
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: -0.015em;
+  }
+}
+
+::selection {
+  background: #b9d5c3;
+  color: #173529;
+}
+
+/* Focus rings in copper — hot pans, visible edges. */
+:focus-visible {
+  outline: 2px solid #b5651d;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Thin scrollbars */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: #c9c4b9;
+  border-radius: 8px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #a8a296;
+}
+
+/* Rich text rendered from admin content */
+.rich {
+  @apply text-ink-700 leading-relaxed;
+}
+.rich p {
+  @apply my-3;
+}
+.rich h1 {
+  @apply text-2xl font-bold text-ink-900 mt-8 mb-3;
+}
+.rich h2 {
+  @apply text-xl font-bold text-ink-900 mt-8 mb-3;
+}
+.rich h3 {
+  @apply text-lg font-semibold text-ink-900 mt-6 mb-2;
+}
+.rich h4 {
+  @apply text-base font-semibold text-ink-900 mt-5 mb-2;
+}
+.rich ul {
+  @apply list-disc pl-6 my-3 space-y-1;
+}
+.rich ol {
+  @apply list-decimal pl-6 my-3 space-y-1;
+}
+.rich a {
+  @apply text-brand-600 underline underline-offset-2 hover:text-brand-700;
+}
+.rich strong {
+  @apply text-ink-900 font-semibold;
+}
+.rich code {
+  @apply bg-ink-100 text-ink-800 px-1.5 py-0.5 rounded text-[0.875em] font-mono;
+}
+.rich pre {
+  @apply bg-ink-900 text-ink-100 rounded-xl p-4 overflow-x-auto my-4 text-sm font-mono leading-relaxed;
+}
+.rich pre code {
+  @apply bg-transparent text-inherit p-0;
+}
+.rich blockquote {
+  @apply border-l-4 border-brand-300 bg-brand-50 pl-4 py-1 my-4 rounded-r-lg text-ink-700;
+}
+.rich hr {
+  @apply my-8 border-ink-200;
+}
+.rich table {
+  @apply w-full border-collapse my-4 text-sm;
+}
+.rich table th {
+  @apply border border-ink-200 bg-ink-100 px-3 py-2 text-left font-semibold text-ink-800;
+}
+.rich table td {
+  @apply border border-ink-200 px-3 py-2;
+}
+
+/* Animations */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-up {
+  animation: fadeUp 0.5s ease-out both;
+}
+
+@keyframes pulseSoft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+.animate-pulse-soft {
+  animation: pulseSoft 2s ease-in-out infinite;
+}
+
+/* Range input styling */
+input[type="range"] {
+  @apply h-1.5 w-full cursor-pointer appearance-none rounded-full bg-ink-200;
+}
+
+/* ============================================================
+   SIGNATURE — the kitchen-scale readout.
+   Numbers are the product here, so every measurement reads like
+   a scale display: mono numerals on a dark instrument panel.
+   ============================================================ */
+.readout {
+  font-family: var(--font-space-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.readout-panel {
+  background: linear-gradient(180deg, #1d4032 0%, #173529 100%);
+  border: 1px solid #234f3c;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08), 0 6px 24px -8px rgb(23 21 18 / 0.25);
+}
+
+/* Eyebrow — the workbench label: mono caps with a copper tick. */
+.eyebrow {
+  font-family: var(--font-space-mono), ui-monospace, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+/* Weigh-in: the readout settles like a scale finding its number. */
+@keyframes weighIn {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.985);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.animate-weigh-in {
+  animation: weighIn 0.55s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-weigh-in,
+  .animate-fade-up,
+  .data-\[state\=open\]\:animate-accordion-down[data-state="open"],
+  .data-\[state\=closed\]\:animate-accordion-up[data-state="closed"] {
+    animation: none;
+  }
+}
+input[type="range"]::-webkit-slider-thumb {
+  @apply h-4 w-4 appearance-none rounded-full bg-brand-600 border-2 border-white shadow;
+}
+input[type="range"]::-moz-range-thumb {
+  @apply h-4 w-4 rounded-full bg-brand-600 border-2 border-white shadow;
+}
+
+/* ============================================================
+   EASY MODE — senior-friendly, high-contrast accessibility view
+   Applied when <html class="easy-mode"> is present.
+   ============================================================ */
+html.easy-mode {
+  font-size: 17px; /* gently scale all rem-based type up */
+}
+
+/* Bigger base text + higher contrast for body copy */
+html.easy-mode body {
+  @apply text-ink-900;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+/* Bump the common text sizes used across the site */
+html.easy-mode .text-xs {
+  font-size: 0.85rem;
+}
+html.easy-mode .text-sm {
+  font-size: 1rem;
+}
+html.easy-mode .text-base {
+  font-size: 1.05rem;
+}
+html.easy-mode .text-lg {
+  font-size: 1.15rem;
+}
+html.easy-mode .text-xl {
+  font-size: 1.3rem;
+}
+html.easy-mode .text-2xl {
+  font-size: 1.6rem;
+}
+html.easy-mode .text-3xl {
+  font-size: 1.9rem;
+}
+html.easy-mode .text-4xl {
+  font-size: 2.2rem;
+}
+html.easy-mode .text-5xl,
+html.easy-mode .text-6xl {
+  font-size: 2.5rem;
+}
+
+/* Higher contrast for muted text colors (remapped to warm ink) */
+html.easy-mode .text-ink-300 {
+  color: #8a8478;
+}
+html.easy-mode .text-ink-400 {
+  color: #6b6557;
+}
+html.easy-mode .text-ink-500 {
+  color: #524d42;
+}
+html.easy-mode .text-ink-600 {
+  color: #37342c;
+}
+html.easy-mode .text-ink-700 {
+  color: #26241f;
+}
+
+/* Bigger, easier-to-tap buttons & inputs */
+html.easy-mode button,
+html.easy-mode [role="button"],
+html.easy-mode a.inline-flex,
+html.easy-mode a.flex {
+  min-height: 44px;
+}
+html.easy-mode input,
+html.easy-mode select,
+html.easy-mode textarea {
+  font-size: 1.05rem;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+}
+html.easy-mode input[type="range"]::-webkit-slider-thumb {
+  @apply h-6 w-6;
+}
+html.easy-mode input[type="range"]::-moz-range-thumb {
+  @apply h-6 w-6;
+}
+
+/* Strong, unmistakable focus ring */
+html.easy-mode :focus-visible {
+  outline: 3px solid #94521a;
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Make links clearly underlined so they read as links */
+html.easy-mode a {
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+/* Slightly roomier cards & grids in easy mode */
+html.easy-mode .shadow-card {
+  @apply border-2 border-ink-200;
+}
+
+/* ============================================================
+   COMPACT MODE — the expert-user opposite of Easy Mode.
+   Applied when <html class="compact-mode"> is present. Shrinks
+   the common spacing utilities (page padding, card padding,
+   gaps, section margins) and widens the tool-card grids so more
+   tools fit per screen. Type sizes are left alone — density
+   comes from whitespace, not readability.
+   ============================================================ */
+
+/* Tighter page paddings (container-level: py-10/12/14/16, px-4/6) */
+html.compact-mode .px-4 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+html.compact-mode .sm\:px-6 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+html.compact-mode .py-8,
+html.compact-mode .py-10,
+html.compact-mode .py-12 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+html.compact-mode .py-14,
+html.compact-mode .py-16 {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+}
+
+/* Tighter card interiors (p-4/5/6/8 and section paddings) */
+html.compact-mode .p-4 {
+  padding: 0.75rem;
+}
+html.compact-mode .p-5 {
+  padding: 0.9rem;
+}
+html.compact-mode .p-6 {
+  padding: 1rem;
+}
+html.compact-mode .p-8 {
+  padding: 1.25rem;
+}
+html.compact-mode .sm\:p-8 {
+  padding: 1.5rem;
+}
+
+/* Tighter gaps between grid/flex children */
+html.compact-mode .gap-2 {
+  gap: 0.375rem;
+}
+html.compact-mode .gap-3 {
+  gap: 0.5rem;
+}
+html.compact-mode .gap-4 {
+  gap: 0.625rem;
+}
+html.compact-mode .gap-5 {
+  gap: 0.75rem;
+}
+html.compact-mode .gap-6 {
+  gap: 0.875rem;
+}
+html.compact-mode .gap-8 {
+  gap: 1.25rem;
+}
+html.compact-mode .gap-10,
+html.compact-mode .gap-12 {
+  gap: 1.5rem;
+}
+
+/* Tighter vertical rhythm between stacked sections */
+html.compact-mode .mt-6 {
+  margin-top: 1rem;
+}
+html.compact-mode .mt-8 {
+  margin-top: 1.25rem;
+}
+html.compact-mode .mt-10 {
+  margin-top: 1.5rem;
+}
+html.compact-mode .mt-12 {
+  margin-top: 1.75rem;
+}
+html.compact-mode .mt-14,
+html.compact-mode .mt-16 {
+  margin-top: 2rem;
+}
+html.compact-mode .mb-6 {
+  margin-bottom: 1rem;
+}
+
+/* Stacked-space utilities inside widgets */
+html.compact-mode .space-y-4 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
+}
+html.compact-mode .space-y-5 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.9rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.9rem * var(--tw-space-y-reverse));
+}
+
+/* Tool-card grids: one more column per breakpoint so more tools
+   fit on screen. The tool grids all share the .cv-auto marker.
+   Phones keep a single column (default) — density starts at sm
+   so narrow screens don't get cramped ~160px cards. */
+@media (min-width: 640px) {
+  html.compact-mode .cv-auto {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  html.compact-mode .cv-auto {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Shorter sticky header saves vertical space. Scoped to the header so
+   avatar/logos elsewhere that use h-16 keep their size. */
+html.compact-mode header .h-16 {
+  height: 3.25rem;
+}
+
+/* Smaller scrollbar gutter stays; nothing else to trim. */
+
+/* ============================================================
+   EASY MODE + DARK HIGH-CONTRAST — the last-resort accessibility view.
+   Applied when <html class="easy-mode easy-contrast"> is present (the
+   contrast flag is a sub-option of Easy Mode and is meaningless without it).
+   Pure black background, bright white text and clearly outlined cards for
+   people with severe low vision. Every light surface flips to black, every
+   muted ink flips to a readable light gray, and every card gains a clear
+   2px white border so structure never depends on subtle shading.
+   ============================================================ */
+html.easy-mode.easy-contrast {
+  color-scheme: dark;
+  background: #000;
+}
+html.easy-mode.easy-contrast body {
+  @apply bg-black text-white;
+}
+
+/* ---- Surfaces: every light fill becomes black ---------------------------- */
+html.easy-mode.easy-contrast :is(
+  .bg-paper, .bg-white, .bg-ink-50, .bg-ink-100, .bg-ink-200,
+  .bg-ink-50\/50, .bg-ink-100\/50, .bg-ink-100\/60, .bg-linen
+) {
+  background: #000;
+}
+/* Translucent header bar keeps its blur but goes black */
+html.easy-mode.easy-contrast :is(
+  .bg-paper\/90, .bg-paper\/80, .bg-white\/80, .bg-white\/90
+) {
+  background: rgb(0 0 0 / 0.92);
+}
+/* Hover tints flip to faint white so states stay visible on black */
+html.easy-mode.easy-contrast .hover\:bg-ink-100:hover,
+html.easy-mode.easy-contrast .hover\:bg-ink-50:hover,
+html.easy-mode.easy-contrast .hover\:bg-white:hover,
+html.easy-mode.easy-contrast .hover\:bg-paper:hover {
+  background: #141414;
+}
+html.easy-mode.easy-contrast .hover\:bg-brand-50:hover,
+html.easy-mode.easy-contrast .hover\:bg-brand-100:hover {
+  background: #12281c;
+}
+html.easy-mode.easy-contrast .hover\:bg-red-50:hover,
+html.easy-mode.easy-contrast .hover\:bg-red-100:hover {
+  background: #2b0d0d;
+}
+html.easy-mode.easy-contrast .hover\:bg-emerald-50:hover,
+html.easy-mode.easy-contrast .hover\:bg-green-50:hover,
+html.easy-mode.easy-contrast .hover\:bg-green-100:hover {
+  background: #0b2418;
+}
+/* Light brand/status tints → dark tints (badges, chips, accents) */
+html.easy-mode.easy-contrast :is(.bg-brand-50, .bg-brand-100) {
+  background: #12281c;
+}
+html.easy-mode.easy-contrast :is(.bg-emerald-50, .bg-emerald-100, .bg-green-50, .bg-green-100) {
+  background: #0b2418;
+}
+html.easy-mode.easy-contrast :is(.bg-red-50, .bg-red-100) {
+  background: #2b0d0d;
+}
+html.easy-mode.easy-contrast :is(.bg-amber-50, .bg-yellow-50, .bg-yellow-100) {
+  background: #2b2006;
+}
+html.easy-mode.easy-contrast :is(.bg-blue-50, .bg-blue-100) {
+  background: #0a1d2e;
+}
+/* Translucent tints (bg-brand-50/40, /50, /60 …) resolve to light pastels
+   against the black page; flip every opacity variant the site uses so no
+   light surface leaks through. */
+html.easy-mode.easy-contrast :is(
+  .bg-brand-50\/30, .bg-brand-50\/40, .bg-brand-50\/50, .bg-brand-50\/60,
+  .bg-red-50\/40, .bg-red-50\/50,
+  .bg-green-50\/50, .bg-green-50\/60,
+  .bg-emerald-50\/50,
+  .bg-amber-50\/40, .bg-amber-50\/60
+) {
+  background: #12281c;
+}
+/* Copper is the accent on tool pages (hero badges, chips) */
+html.easy-mode.easy-contrast :is(.bg-copper-50) {
+  background: #2b2006;
+}
+html.easy-mode.easy-contrast :is(.bg-copper-500\/10, .bg-copper-500\/15) {
+  background: rgb(181 101 29 / 0.18);
+}
+/* Partial-white fills (bg-white/70 on tool option rows) and partial-ink rows */
+html.easy-mode.easy-contrast :is(.bg-white\/70, .bg-ink-50\/60, .bg-ink-50\/40) {
+  background: rgb(255 255 255 / 0.06);
+}
+/* Remaining tints in use: sky (VoiceGuide, shelf-life hints, doneness bar),
+   pink (admin highlights), violet (admin icons). Sky-600/700 are dark
+   buttons with white text — keep them. */
+html.easy-mode.easy-contrast :is(.bg-sky-50, .bg-sky-100, .bg-sky-200) {
+  background: #0a1d2e;
+}
+html.easy-mode.easy-contrast :is(.bg-pink-50, .bg-violet-50) {
+  background: #2b1420;
+}
+html.easy-mode.easy-contrast :is(.border-sky-100, .border-sky-200, .border-sky-400) {
+  border-color: #7dd3fc;
+}
+html.easy-mode.easy-contrast :is(.text-sky-500, .text-violet-600, .text-pink-600, .text-orange-500) {
+  color: #7dd3fc;
+}
+html.easy-mode.easy-contrast :is(.text-pink-600) {
+  color: #f9a8d4;
+}
+
+/* ---- Text: every muted ink becomes bright, readable gray ------------------ */
+html.easy-mode.easy-contrast :is(.text-ink-900, .text-ink-800, .text-ink-700, .text-ink-600) {
+  color: #ffffff;
+}
+html.easy-mode.easy-contrast :is(.text-ink-500, .text-ink-400, .text-ink-300) {
+  color: #d9d9d7;
+}
+/* Brand greens stay readable on the dark tints */
+html.easy-mode.easy-contrast :is(
+  .text-brand-500, .text-brand-600, .text-brand-700, .text-brand-800,
+  .text-copper-200, .text-copper-300
+) {
+  color: #6ee7a0;
+}
+html.easy-mode.easy-contrast :is(.text-red-500, .text-red-600, .text-red-700) {
+  color: #fda4a4;
+}
+html.easy-mode.easy-contrast :is(.text-emerald-700, .text-green-700, .text-emerald-600) {
+  color: #4ade80;
+}
+html.easy-mode.easy-contrast :is(.text-amber-700, .text-yellow-700) {
+  color: #fcd34d;
+}
+html.easy-mode.easy-contrast :is(.text-blue-600, .text-blue-700) {
+  color: #7dd3fc;
+}
+/* Deeper status/copper inks the site uses on those dark tints */
+html.easy-mode.easy-contrast :is(.text-copper-700, .text-copper-800) {
+  color: #f6c795;
+}
+html.easy-mode.easy-contrast :is(.text-red-800, .text-red-600) {
+  color: #fda4a4;
+}
+html.easy-mode.easy-contrast :is(.text-amber-600, .text-amber-800) {
+  color: #fcd34d;
+}
+html.easy-mode.easy-contrast :is(.text-emerald-800, .text-green-600, .text-green-800) {
+  color: #4ade80;
+}
+
+/* ---- Borders: every card edge becomes clearly visible --------------------- */
+html.easy-mode.easy-contrast :is(
+  .border-ink-100, .border-ink-200, .border-ink-300,
+  .border-ink-100\/80, .border-ink-200\/80, .border-ink-200\/60
+) {
+  border-color: #e5e5e5;
+}
+html.easy-mode.easy-contrast .divide-ink-100 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #e5e5e5;
+}
+html.easy-mode.easy-contrast :is(.border-brand-100, .border-brand-200, .border-brand-300) {
+  border-color: #3f8f63;
+}
+html.easy-mode.easy-contrast :is(.border-red-100, .border-red-200) {
+  border-color: #fca5a5;
+}
+html.easy-mode.easy-contrast :is(.border-emerald-200, .border-green-200) {
+  border-color: #6ee7b7;
+}
+html.easy-mode.easy-contrast :is(.border-amber-200, .border-yellow-200) {
+  border-color: #fde68a;
+}
+html.easy-mode.easy-contrast :is(.border-blue-200) {
+  border-color: #93c5fd;
+}
+html.easy-mode.easy-contrast :is(.border-copper-200, .border-copper-300, .border-copper-300\/60) {
+  border-color: #d9a05b;
+}
+/* Every shadow-card gets a thick white edge so cards read as cards */
+html.easy-mode.easy-contrast .shadow-card {
+  border: 2px solid #ffffff;
+}
+
+/* ---- Form controls --------------------------------------------------------- */
+html.easy-mode.easy-contrast input,
+html.easy-mode.easy-contrast select,
+html.easy-mode.easy-contrast textarea {
+  background: #000;
+  color: #fff;
+  border-color: #ffffff;
+}
+html.easy-mode.easy-contrast input::placeholder,
+html.easy-mode.easy-contrast textarea::placeholder {
+  color: #9a9a9a;
+}
+html.easy-mode.easy-contrast input[type="range"] {
+  background: #3a3a3a;
+}
+
+/* ---- Links & focus ---------------------------------------------------------- */
+/* Plain text links turn bright blue so clickable text is unmistakable, but
+   anchors that carry their own color treatment keep it: primary CTA buttons
+   (brand or ink backgrounds with white text), the header logo (text-ink-900 →
+   white) and brand-colored links (text-brand-* → bright green) are all left
+   to the class-level remaps above instead of being forced blue. */
+html.easy-mode.easy-contrast a:not([class*="bg-brand"]):not([class*="bg-ink"]):not([class*="text-white"]):not([class*="text-ink-900"]):not([class*="text-brand"]) {
+  color: #7dd3fc;
+}
+html.easy-mode.easy-contrast :focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+html.easy-mode.easy-contrast ::selection {
+  background: #6ee7a0;
+  color: #000;
+}
+
+/* Scrollbars match the dark theme */
+html.easy-mode.easy-contrast *::-webkit-scrollbar-track {
+  background: #000;
+}
+html.easy-mode.easy-contrast *::-webkit-scrollbar-thumb {
+  background: #8a8a8a;
+}
+html.easy-mode.easy-contrast *::-webkit-scrollbar-thumb:hover {
+  background: #b3b3af;
+}
+
+/* ============================================================
+   PERFORMANCE — skip rendering below-the-fold card grids until
+   they scroll near the viewport. Saves paint + layout work on
+   long pages (homepage, tools listing). `contain-intrinsic-size`
+   reserves the estimated height so the scrollbar doesn't jump.
+   ============================================================ */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 480px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cv-auto {
+    contain-intrinsic-size: auto 480px;
+  }
+}
+
+/* Hide number input spinners */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}

@@ -1,0 +1,33 @@
+node_modules/
+.next/
+out/
+
+# SQLite database (local + remote copies)
+data/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Environment files (keep .env.example committed)
+.env
+.env*.local
+.env.production
+
+# Deploy configs contain server addresses/keys — keep the real ones local,
+# but commit the .example templates
+.env.deploy
+.env.deploy.staging
+.env.deploy.prod
+.env.deploy.*.local
+
+# Deployment tooling
+.vercel/
+.vercel
+.DS_Store
+*.log
+*.pid
+
+# Local & remote database backups
+backups/
+

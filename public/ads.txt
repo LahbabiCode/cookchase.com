@@ -1,0 +1,6 @@
+# ads.txt for cookchase.com
+# After AdSense approval, replace pub-XXXXXXXXXXXXXXXX below with your real
+# publisher ID (ca-pub-... found in the AdSense dashboard).
+# The trailing "f08c47fec0942fa0" is Google's official AdSense verification
+# tag and must stay exactly as-is.
+google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
