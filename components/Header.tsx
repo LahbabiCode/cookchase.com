@@ -2,12 +2,10 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X, Scale, ExternalLink, Heart, LogOut, UserRound, ShieldCheck } from "lucide-react";
+import { Menu, X, Scale, Heart, LogOut, UserRound, ShieldCheck } from "lucide-react";
 import { useFavorites } from "@/lib/useFavorites";
 import { useLang } from "@/lib/useLang";
 import SearchBox from "./SearchBox";
-import EasyModeToggle from "./EasyModeToggle";
-import CompactModeToggle from "./CompactModeToggle";
 
 const navLinks = [
   { href: "/", labelKey: "nav.home" },
@@ -105,24 +103,11 @@ export default function Header() {
             </Link>
           ))}
           <div className="ml-1">
-            <EasyModeToggle />
-          </div>
-          <div className="ml-1">
-            <CompactModeToggle />
-          </div>
-          <div className="ml-1">
             <FavoritesLink />
           </div>
           <div className="ml-1">
             <AccountLink />
           </div>
-          <Link
-            href="/tools"
-            className="ml-3 hidden lg:inline-flex items-center gap-1.5 rounded-md bg-brand-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-800"
-          >
-            Explore Tools
-            <ExternalLink className="h-3.5 w-3.5" />
-          </Link>
         </nav>
 
         <button
@@ -153,14 +138,10 @@ export default function Header() {
               {t(link.labelKey)}
             </Link>
           ))}
-          <div className="mt-2 flex items-center gap-2 border-t border-ink-100 pt-2">
-            <EasyModeToggle />
-            <CompactModeToggle />
-          </div>
           <Link
             href="/favorites"
             onClick={() => setOpen(false)}
-            className="flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium text-ink-700 hover:bg-ink-100"
+            className="mt-2 flex items-center gap-2 rounded-md border-t border-ink-100 px-3 py-2.5 pt-4 text-sm font-medium text-ink-700 hover:bg-ink-100"
           >
             <Heart className="h-4 w-4" />
             {t("nav.myFavorites")}
@@ -183,13 +164,6 @@ export default function Header() {
               {t("nav.myAccount")}
             </Link>
           )}
-          <Link
-            href="/tools"
-            onClick={() => setOpen(false)}
-            className="mt-2 block rounded-md bg-ink-900 px-3 py-2.5 text-center text-sm font-semibold text-white"
-          >
-            Explore Tools
-          </Link>
         </nav>
       )}
     </header>
