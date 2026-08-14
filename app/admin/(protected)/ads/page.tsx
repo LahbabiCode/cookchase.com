@@ -24,11 +24,23 @@ const LOCATION_LABELS: Record<string, string> = {
   footer: "Footer banner"
 };
 
+// Mirrors app/ads.txt/route.ts so the admin sees exactly what crawlers get.
+function adsTxtPreview(custom: string, adsenseClient: string): string {
+  const trimmed = custom.trim();
+  if (trimmed) return trimmed;
+  const digits = adsenseClient.trim().match(/(\d{10,})/)?.[1];
+  if (!digits) {
+    return "# Not configured yet — add your AdSense publisher ID above.";
+  }
+  return `google.com, pub-${digits}, DIRECT, f08c47fec0942fa0`;
+}
+
 export default function AdsAdmin() {
   const [ads, setAds] = useState<Ad[]>([]);
   const [loading, setLoading] = useState(true);
   const [adsenseClient, setAdsenseClient] = useState("");
   const [adsenseEnabled, setAdsenseEnabled] = useState(false);
+  const [adsTxt, setAdsTxt] = useState("");
   const [googleVerification, setGoogleVerification] = useState("");
   const [bingVerification, setBingVerification] = useState("");
   const [yandexVerification, setYandexVerification] = useState("");
@@ -43,6 +55,7 @@ export default function AdsAdmin() {
     setAds(Array.isArray(adsRes) ? adsRes : []);
     setAdsenseClient(settingsRes.adsense_client || "");
     setAdsenseEnabled(settingsRes.adsense_enabled === "1");
+    setAdsTxt(settingsRes.ads_txt || "");
     setGoogleVerification(settingsRes.google_verification || "");
     setBingVerification(settingsRes.bing_verification || "");
     setYandexVerification(settingsRes.yandex_verification || "");
@@ -72,6 +85,7 @@ export default function AdsAdmin() {
       body: JSON.stringify({
         adsense_client: adsenseClient,
         adsense_enabled: adsenseEnabled ? "1" : "0",
+        ads_txt: adsTxt,
         google_verification: googleVerification,
         bing_verification: bingVerification,
         yandex_verification: yandexVerification,
@@ -159,6 +173,44 @@ export default function AdsAdmin() {
             <span className="text-sm font-medium text-ink-700">Enable AdSense ads</span>
           </label>
         </div>
+        {/* ads.txt — generated from the publisher ID above, or overridden here */}
+        <div className="mt-6 rounded-lg border border-ink-200 bg-ink-50/60 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <label className="block text-sm font-medium text-ink-700">
+              ads.txt
+            </label>
+            <a
+              href="/ads.txt"
+              target="_blank"
+              rel="noreferrer"
+              className="text-xs font-semibold text-brand-600 hover:underline"
+            >
+              Open /ads.txt ↗
+            </a>
+          </div>
+          <p className="mt-1 text-xs text-ink-500">
+            Leave this empty and the file is generated from the publisher ID
+            above — that is all AdSense needs. Fill it in only to serve custom
+            lines (extra ad networks, resellers, several publisher IDs). Saving
+            here updates the live file immediately, with no redeploy.
+          </p>
+          <textarea
+            className={`${inputCls} mt-3 min-h-[110px] font-mono text-xs`}
+            value={adsTxt}
+            onChange={(e) => setAdsTxt(e.target.value)}
+            placeholder={"google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0"}
+            spellCheck={false}
+          />
+          <div className="mt-3">
+            <span className="text-xs font-medium text-ink-600">
+              Currently served at /ads.txt:
+            </span>
+            <pre className="mt-1.5 overflow-x-auto whitespace-pre-wrap rounded-md bg-ink-900 px-3 py-2 font-mono text-[11px] leading-relaxed text-ink-100">
+              {adsTxtPreview(adsTxt, adsenseClient)}
+            </pre>
+          </div>
+        </div>
+
         <div className="mt-4">
           <label className="mb-1.5 block text-sm font-medium text-ink-700">
             Google site verification (meta tag)

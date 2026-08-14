@@ -32,6 +32,9 @@ export const siteSettingsSeed: Record<string, string> = {
   social_pinterest: "https://pinterest.com/cookchase",
   adsense_client: "",
   adsense_enabled: "0",
+  // Leave empty to have /ads.txt generated from adsense_client; set it to
+  // serve those exact lines instead (extra networks, resellers, …).
+  ads_txt: "",
   google_verification: "",
   google_verification_file: "",
   bing_verification: "",
