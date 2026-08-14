@@ -24,18 +24,35 @@ if (!fs.existsSync(dbDir)) {
 
 let db: Database.Database | null = null;
 
+// `next build` collects page data in parallel worker processes, and every one
+// of them opens this file, creates the schema and may try to seed it. Without
+// the guards below that races: SQLite reports "database is locked", and two
+// workers seeding at once trip the UNIQUE constraint on tools.slug.
 export function getDb(): Database.Database {
   if (!db) {
-    db = new Database(dbPath);
-    // `next build` collects page data in parallel worker processes, so several
-    // of them open this file at once. Without a busy timeout the pragmas below
-    // fail immediately with SQLITE_BUSY ("database is locked"); with one they
-    // wait for the writer to finish. It also protects concurrent requests.
-    db.pragma("busy_timeout = 15000");
-    db.pragma("journal_mode = WAL");
-    db.pragma("foreign_keys = ON");
-    initSchema(db);
-    seedIfEmpty(db);
+    const conn = new Database(dbPath);
+    // Make every statement wait for a competing writer instead of failing.
+    conn.pragma("busy_timeout = 30000");
+    // Switching the journal mode takes an exclusive lock, and SQLite returns
+    // SQLITE_BUSY straight away for it — the busy handler is deliberately not
+    // consulted for journal_mode changes. The mode is persisted in the file
+    // header, so whichever process wins the race sets WAL for all of them and
+    // the rest can safely carry on.
+    try {
+      conn.pragma("journal_mode = WAL");
+    } catch (err) {
+      if ((err as { code?: string }).code !== "SQLITE_BUSY") throw err;
+    }
+    conn.pragma("foreign_keys = ON");
+    // One exclusive transaction for schema + seed: concurrent processes queue
+    // on the write lock (honouring busy_timeout above) and, once through, find
+    // the tables already present and the tools table non-empty, so they fall
+    // through to the idempotent migrations instead of re-seeding.
+    conn.transaction(() => {
+      initSchema(conn);
+      seedIfEmpty(conn);
+    }).exclusive();
+    db = conn;
   }
   return db;
 }
