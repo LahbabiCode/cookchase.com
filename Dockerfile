@@ -30,9 +30,12 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 
-# Standalone output (server.js + traced node_modules) + static assets
+# Standalone output (server.js + traced node_modules) + static assets.
+# `public/` is not part of the standalone bundle — copy it explicitly or
+# ads.txt and the self-hosted fonts 404 in production.
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
 
 # Data directory must be writable at runtime (SQLite file lives here).
 # Mount a persistent volume at /app/data in production.

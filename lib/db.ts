@@ -27,6 +27,11 @@ let db: Database.Database | null = null;
 export function getDb(): Database.Database {
   if (!db) {
     db = new Database(dbPath);
+    // `next build` collects page data in parallel worker processes, so several
+    // of them open this file at once. Without a busy timeout the pragmas below
+    // fail immediately with SQLITE_BUSY ("database is locked"); with one they
+    // wait for the writer to finish. It also protects concurrent requests.
+    db.pragma("busy_timeout = 15000");
     db.pragma("journal_mode = WAL");
     db.pragma("foreign_keys = ON");
     initSchema(db);
